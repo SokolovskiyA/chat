@@ -1,0 +1,34 @@
+.chat {
+    height: 100vh;
+    width: 100vw;
+    background-color: #348380;
+    &__window {
+        padding: 1rem;
+        overflow-y: auto;
+        background-color: rgb(155, 255, 253);
+        height: 70vh;
+        width: 100vw;
+    }
+    &__input {
+        padding: 5px;
+        background-color: rgb(255, 234, 0);
+        width: 100vw;
+        height: 20vh;
+        border: none;
+        resize: none;
+    }
+    &__send {
+        background-color: rgb(126, 255, 143);
+        width: 100vw;
+        height: 5vh;
+        border: none;
+        padding: 5px;
+    }
+    &__leave {
+        background-color: rgb(255, 126, 126);
+        width: 100vw;
+        border: none;
+        padding: 5px;
+        height: 5vh;
+    }
+}
