@@ -2,6 +2,8 @@ const express = require('express');
 const { Server } = require('socket.io');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const { v4: uuidv4 } = require('uuid');
+
 
 
 // Create Express server
@@ -19,9 +21,13 @@ mongoose.connect('mongodb+srv://chat_user:chat_user@cluster0.nxav2vt.mongodb.net
     });
 const db = mongoose.connection;
 
-
-
-
+//create new chema to save messages with sender name, text, uuid and timestamp
+const messageSchema = new mongoose.Schema({
+    sender: String,
+    text: String,
+    uuid: String,
+    timestamp: String
+});
 
 // Create Socket.io instance
 const io = new Server(server, {
@@ -33,7 +39,12 @@ const io = new Server(server, {
 
 io.on('connection', (socket) => {
     console.log('A user connected', socket.id);
-
+    socket.on('send_message' , (data) => {
+        //save message to database
+        const Message = mongoose.model('Message', messageSchema);
+        const message = new Message({ sender: data.name, text: data.text, uuid: uuidv4(), timestamp: new Date().toLocaleString() });
+        message.save().then(() => console.log('Message saved'));
+    });
     socket.on('disconnect', () => {
         console.log('User disconnected', socket.id);
     });
