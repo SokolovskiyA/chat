@@ -31,21 +31,20 @@ const io = new Server(server, {
 });
 
 
-io.on('connect', (socket) => {
+io.on('connection', (socket) => {
     console.log('A user connected', socket.id);
-    socket.on('message', (message) => {
-        console.log('Received', message);
-        io.emit('serverMessage', message);
-    });
+
     socket.on('disconnect', () => {
-        console.log('A user disconnected', socket.id);
+        console.log('User disconnected', socket.id);
     });
 });
-
 
 // Start the server
 const port = 5001;
 server.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
+
+
+
 

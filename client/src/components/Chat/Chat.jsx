@@ -14,48 +14,29 @@ const Chat = () => {
     const [socket, setSocket] = useState(null);
 
     useEffect(() => {
-    // Connect to the Socket.io server
-    const newSocket = io('http://localhost:3000'); // Replace with your server URL
-
-    // Set up event listeners
-    newSocket.on('connect', () => {
-        console.log('Connected to the server');
-    });
-
-    newSocket.on('message', (message) => {
-        setMessages((messages) => [...messages, message]);
+        const socket = io('http://localhost:5001');
+        setSocket(socket);
         
-    });
+        return () => {
+            socket.disconnect();
+        };
+    }, []);
 
-    newSocket.on('disconnect', () => {
-        console.log('Disconnected from the server');
-    });
 
-    setSocket(newSocket);
-
-    // Cleanup socket connection when the component unmounts
-    return () => {
-        newSocket.disconnect();
-    };
-}, []);
 
     const handleInputChange = (e) => {
         setMessage(e.target.value);
     }
-    
 
     const sendMessage = () => {
-    if (socket) {
         socket.emit('message', message);
         setMessage('');
-    }
     };
 
     const handleLeave = () => {
-        socket.emit('leave', chatName)
-        setChatName('')
-        navigate('/')
-    }
+        socket.disconnect();
+        navigate('/');
+    };
 
 
     return (
