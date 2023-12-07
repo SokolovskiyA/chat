@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './LogInForm.scss';
 import ChatContext from '../../Context/ChatContext';
@@ -16,6 +16,7 @@ const LogInForm = () => {
             alert('Please enter a valid name')
         } else {
             e.preventDefault()
+
             navigate('/chat')
         }
     };

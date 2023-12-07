@@ -29,6 +29,9 @@ const messageSchema = new mongoose.Schema({
     timestamp: String
 });
 
+const Message = mongoose.model('Message', messageSchema);
+
+
 // Create Socket.io instance
 const io = new Server(server, {
     cors: {
@@ -39,11 +42,25 @@ const io = new Server(server, {
 
 io.on('connection', (socket) => {
     console.log('A user connected', socket.id);
+    try {
+        Message.find().exec().then((messages) => {
+            socket.emit('load_messages', messages);
+        });
+    } catch (error) {
+        console.error('Error fetching messages:', error);
+    }
+
     socket.on('send_message' , (data) => {
         //save message to database
-        const Message = mongoose.model('Message', messageSchema);
+        console.log(data.text)
         const message = new Message({ sender: data.name, text: data.text, uuid: uuidv4(), timestamp: new Date().toLocaleString() });
-        message.save().then(() => console.log('Message saved'));
+        message.save().then(() => {
+            Message.find().exec().then((messages) => {
+                io.emit('load_messages', messages);
+            });
+        });
+
+        
     });
     socket.on('disconnect', () => {
         console.log('User disconnected', socket.id);
